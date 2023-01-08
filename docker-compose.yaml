@@ -1,0 +1,33 @@
+# Use postgres/example user/password credentials
+version: '3.1'
+
+services:
+# NODE JS  
+  node:
+    build: .
+    image: node_xd:1.0
+    container_name: node
+    working_dir: /usr/src/app
+    environment:
+      - NODE_ENV=development #development #production
+    volumes:
+      - ./:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - "3000:3000"
+    command: bash -c "npm run start"
+
+
+  db:
+    image: postgres
+    restart: always
+    environment:
+      POSTGRES_USER: user
+      POSTGRES_PASSWORD: pass
+      POSTGRES_DB: db
+    ports:
+      - "5432:5432"
+    volumes:
+      - ./postgres-data:/var/lib/postgresql/data
+  
+
