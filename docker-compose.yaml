@@ -1,33 +1,42 @@
 # Use postgres/example user/password credentials
-version: '3.1'
+version: '3'
+
+networks:
+    samutips:
 
 services:
 # NODE JS  
   node:
-    build: .
-    image: node_xd:1.0
+    build: ./config/node
+    image: samu_node
     container_name: node
     working_dir: /usr/src/app
-    environment:
-      - NODE_ENV=development #development #production
+    env_file:
+      - config/.env #development #production
     volumes:
       - ./:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - "3000:3000"
+      - "80:80"
     command: bash -c "npm run start"
-
+    networks:
+      - samutips
+    depends_on:
+      - db
 
   db:
-    image: postgres
+    image: postgres:12
     restart: always
-    environment:
-      POSTGRES_USER: user
-      POSTGRES_PASSWORD: pass
-      POSTGRES_DB: db
+    container_name: samu_pg
+    env_file:
+      - config/.env
     ports:
-      - "5432:5432"
+      - 5432:5432
     volumes:
       - ./postgres-data:/var/lib/postgresql/data
+      - ./config/init.sql:/docker-entrypoint-initdb.d/10-init.sql
+    networks:
+      - samutips
+    
   
 
