@@ -1,10 +1,7 @@
-# Use postgres/example user/password credentials
 version: '3'
 
-networks:
-    samutips:
-
 services:
+
 # NODE JS  
   node:
     build: .
@@ -12,7 +9,7 @@ services:
     container_name: node
     working_dir: /usr/src/app
     env_file:
-      - config/.env #development #production
+      - config/.env
     volumes:
       - ./:/usr/src/app
       - /usr/src/app/node_modules
@@ -24,6 +21,7 @@ services:
     depends_on:
       - db
 
+# POSTGRES
   db:
     image: postgres:12
     restart: always
@@ -38,5 +36,7 @@ services:
     networks:
       - samutips
     
-  
+networks:
+    samutips:
+
 
